@@ -11,13 +11,10 @@ import players.EasyAIPlayer;
 import players.EasyHighestAIPlayer;
 import players.APlayer;
 import players.NNPlayer;
-import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -148,48 +145,16 @@ public class PopulationManager {
     private void SaveBest(){
         
         double[] genome = members.element().getNeuralNetwork().GetGenome();
-        
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream("BestGenome.txt");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(genome);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(PopulationManager.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(PopulationManager.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException ex) {
-                Logger.getLogger(PopulationManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        GenomeLoader.SaveGenome(genome);
     }
     
     private void LoadBest(){
-        double[] genome;
-        
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream("BestGenome.txt");
-            ObjectInputStream iis = new ObjectInputStream(fis);
-            genome = (double[]) iis.readObject();
-            
-            if(genome.length>0){
-                NNPlayer bestplayer = new NNPlayer(2, WIDTH, HEIGHT);
-                bestplayer.getNeuralNetwork().SetGenome(genome);
-                TestMember(bestplayer, TESTGAMES);
-                members.add(bestplayer);
-            }
-        } catch ( IOException | ClassNotFoundException ex) {
-            Logger.getLogger(PopulationManager.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException ex) {
-                Logger.getLogger(PopulationManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        double[] genome = GenomeLoader.LoadGenome();
+        if(genome.length>0){
+            NNPlayer bestplayer = new NNPlayer(2, WIDTH, HEIGHT);
+            bestplayer.getNeuralNetwork().SetGenome(genome);
+            TestMember(bestplayer, TESTGAMES);
+            members.add(bestplayer);
         }
     }
     

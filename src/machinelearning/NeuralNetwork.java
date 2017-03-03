@@ -23,27 +23,18 @@ public class NeuralNetwork {
     private double[][] hiddenToOutput;
 
     public NeuralNetwork(int inputcount, int hiddencount, int outputcount) {
-        this(inputcount, hiddencount, outputcount, GenerateGenome(inputcount * hiddencount + hiddencount * outputcount));
-    }
-
-    public NeuralNetwork(int inputcount, int hiddencount, int outputcount, double[] genome) {
         inputLayer = new double[inputcount];
         hiddenLayer = new double[hiddencount];
         outputLayer = new double[outputcount];
 
         inputToHidden = new double[inputcount][hiddencount];
         hiddenToOutput = new double[hiddencount][outputcount];
-        SetGenome(genome);
+        InitConnections();
     }
 
-    private static double[] GenerateGenome(int size) {
-        double[] output = new double[size];
-//        for (int i = 0; i < size; i++) {
-//            output[i] = 0;
-//        }
-        output[rnd.nextInt(size)] = rnd.nextInt(3)-1;
-        output[rnd.nextInt(size)] = rnd.nextInt(3)-1;
-        return output;
+    private void InitConnections() {
+        inputToHidden[rnd.nextInt(inputToHidden.length)][rnd.nextInt(inputToHidden[0].length)] = rnd.nextInt(3)-1;
+        hiddenToOutput[rnd.nextInt(hiddenToOutput.length)][rnd.nextInt(hiddenToOutput[0].length)] = rnd.nextInt(3)-1;
     }
 
     public int GetOutput(double[] input) {
@@ -95,6 +86,25 @@ public class NeuralNetwork {
 
         return input;
     }
+
+    public double[][] getInputToHidden() {
+        return inputToHidden;
+    }
+
+    public void setInputToHidden(double[][] inputToHidden) {
+        this.inputToHidden = inputToHidden;
+    }
+
+    public double[][] getHiddenToOutput() {
+        return hiddenToOutput;
+    }
+
+    public void setHiddenToOutput(double[][] hiddenToOutput) {
+        this.hiddenToOutput = hiddenToOutput;
+    }
+    
+    
+    
 
     public double[] GetGenome() {
         double[] output = new double[inputToHidden.length * inputToHidden[0].length + hiddenToOutput.length * hiddenToOutput[0].length];
