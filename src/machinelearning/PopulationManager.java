@@ -3,8 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connectfournn;
+package machinelearning;
 
+import game.GameInstance;
+import utility.StatsManager;
+import players.EasyAIPlayer;
+import players.EasyHighestAIPlayer;
+import players.APlayer;
+import players.NNPlayer;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;

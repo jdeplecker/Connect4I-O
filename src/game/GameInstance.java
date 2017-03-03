@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connectfournn;
+package game;
+
+import players.APlayer;
 
 /**
  *

@@ -3,7 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connectfournn;
+package players;
+
+import game.Board;
+import machinelearning.NeuralNetwork;
 
 /**
  *
@@ -22,7 +25,7 @@ public class NNPlayer extends APlayer {
     }
 
     @Override
-    boolean MakeMove(Board b) {
+    public boolean MakeMove(Board b) {
         int output = nn.GetOutput(ConvertToNNInput(b));
         return b.putPiece(output, playerNr);        
     }

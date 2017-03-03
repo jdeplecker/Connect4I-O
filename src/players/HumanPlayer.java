@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connectfournn;
+package players;
 
+import game.Board;
 import java.util.Scanner;
 
 /**
@@ -19,7 +20,7 @@ public class HumanPlayer extends APlayer{
     }
     
     @Override
-     boolean MakeMove(Board b){
+     public boolean MakeMove(Board b){
         System.out.println("Enter columnnr to insert (0 - " + (b.GetWidth()-1) + "):");
         int col = in.nextInt();
         if(col > 0 && col < b.GetWidth()){

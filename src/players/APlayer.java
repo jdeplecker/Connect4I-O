@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connectfournn;
+package players;
+
+import game.Board;
 
 /**
  *
@@ -11,17 +13,13 @@ package connectfournn;
  */
 public class APlayer {
 
-    int playerNr;
+    public int playerNr;
     
     public APlayer(int playerNr) {
         this.playerNr = playerNr;
     }    
     
-    boolean MakeMove(Board b){
+    public boolean MakeMove(Board b){
         return true;
-    }
-    
-    public int GetPlayerNr(){
-        return playerNr;
     }
 }

@@ -5,6 +5,11 @@
  */
 package connectfournn;
 
+import machinelearning.PopulationManager;
+import game.GameInstance;
+import players.EasyAIPlayer;
+import players.EasyHighestAIPlayer;
+
 /**
  *
  * @author Joeri

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connectfournn;
+package players;
 
+import game.Board;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -22,7 +23,7 @@ public class EasyAIPlayer extends APlayer{
     
     
     @Override
-     boolean MakeMove(Board b) {
+     public boolean MakeMove(Board b) {
         
         ArrayList possibleColumns = new ArrayList();
         
