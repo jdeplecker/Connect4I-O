@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package players;
+package connectfournn.players;
 
-import game.Board;
+import connectfournn.game.Board;
 import java.util.ArrayList;
 import java.util.Random;
 import javafx.collections.transformation.SortedList;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package connectfournn.game;
 
 /**
  *
@@ -46,6 +46,23 @@ public class Board {
 
     public int GetHeight() {
         return board[0].length;
+    }
+    
+    public double[] ConvertToNNInput() {
+        double[] output = new double[GetWidth() * GetHeight()*2];
+        for (int j = 0; j < GetHeight(); j++) {
+            for (int i = 0; i < GetWidth(); i++) {
+                if(GetPiece(i, j)==0){                    
+                    output[j*GetWidth()+i*2] = 1;
+                }
+                else{
+                    output[j*GetWidth()+i*2] = 1;
+                    output[j*GetWidth()+i*2+1] = (double)(GetPiece(i, j))/2;
+                }
+            }
+        }
+        
+        return output;
     }
     
     public void Print(){

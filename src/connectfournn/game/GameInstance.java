@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package connectfournn.game;
 
-import players.APlayer;
+import connectfournn.Settings;
+import connectfournn.players.APlayer;
 
 /**
  *
@@ -20,13 +21,15 @@ public class GameInstance {
     private boolean p1Turn;
     private int wonState;
 
-    public GameInstance(APlayer p1, APlayer p2, int width, int height) {
+    public GameInstance(APlayer p1, APlayer p2) {
         this.player1 = p1;
+        player1.playerNr = 1;
         this.player2 = p2;
+        player2.playerNr = 2;
 
         p1Turn = true;
         wonState = 0;
-        board = new Board(width, height);
+        board = new Board(Settings.BOARD_WIDTH, Settings.BOARD_HEIGHT);
     }
 
     public void PlayTurn() {

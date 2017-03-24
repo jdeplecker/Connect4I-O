@@ -3,16 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package machinelearning;
+package connectfournn.machinelearning;
 
-import game.GameInstance;
-import utility.StatsManager;
-import players.EasyAIPlayer;
-import players.EasyHighestAIPlayer;
-import players.APlayer;
-import players.NNPlayer;
+import connectfournn.Settings;
+import connectfournn.players.*;
+import connectfournn.game.GameInstance;
+import connectfournn.utility.StatsManager;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.Random;
 
@@ -24,51 +23,48 @@ public class PopulationManager {
 
     private static Random rnd = new Random();
     
-    
-    private static final int TESTGAMES = 250;
-
-    private static final int WIDTH = 7;
-    private static final int HEIGHT = 6;
-    
-    private NNPlayer best = new NNPlayer(1, WIDTH, HEIGHT);
+    private NNPlayer best = new NNPlayer(1);
     
     PriorityQueue<NNPlayer> members = new PriorityQueue<>((a,b) -> (int)(b.getFitness()*1000 - a.getFitness()*1000));
     
-    public PopulationManager(int size, boolean loadbest) {
+    public PopulationManager(boolean loadbest) {
+        
+        int size = Settings.GENERATION_COUNT;
+        
         if(loadbest){
             size--;
             LoadBest();
             best = members.peek();
-            best.playerNr = 1;
-            PrintGenome(best.getNeuralNetwork().GetGenome());
+            double[] genome = NNGenomeAdapter.NNToGenome(best.getNeuralNetwork());
+            PrintGenome(genome);
         }
         for(int i=0; i<size; i++){
-            NNPlayer m = new NNPlayer(2, WIDTH, HEIGHT);
-            TestMember(m, TESTGAMES);
+            NNPlayer m = new NNPlayer(2);
+            TestMember(m);
             members.add(m);
         }
         SaveBest();
     }
     
     
-    private void TestMember(NNPlayer p2, int gamesamount){
+    private void TestMember(NNPlayer p2){
         
+        int gamesamount = Settings.GAME_COUNT;
+                
         StatsManager stats = new StatsManager();
-        p2.playerNr = 2;
-        best.playerNr = 1;
         APlayer easy = new EasyAIPlayer(1);
         APlayer easyhighest = new EasyHighestAIPlayer(1);
         
         for (int i = 0; i < gamesamount; i++) {
             GameInstance gi;
             if(i<gamesamount/3){
-                gi = new GameInstance(easy, p2, WIDTH, HEIGHT);                
+                gi = new GameInstance(easy, p2);                
             }
             else if(i<gamesamount/3*2){
-                gi = new GameInstance(best, p2, WIDTH, HEIGHT);    
+                gi = new GameInstance(best, p2);    
             }
             else{
-                gi = new GameInstance(easyhighest, p2, WIDTH, HEIGHT);           
+                gi = new GameInstance(easyhighest, p2);           
             }
             while (gi.GetWonState() == 0) {
                 gi.PlayTurn();
@@ -97,17 +93,22 @@ public class PopulationManager {
             members.clear();
             int i=0;
             while(i<memberscount-5){
-                NNPlayer child = new NNPlayer(2, WIDTH, HEIGHT);
-                double[] g1 = highest.get(rnd.nextInt(highest.size())).getNeuralNetwork().GetGenome();
-                double[] g2 = highest.get(rnd.nextInt(highest.size())).getNeuralNetwork().GetGenome();
+                
+                NNPlayer p1 = highest.get(rnd.nextInt(highest.size()));
+                double[] g1 = NNGenomeAdapter.NNToGenome(p1.getNeuralNetwork());
+                
+                NNPlayer p2 = highest.get(rnd.nextInt(highest.size()));
+                double[] g2 = NNGenomeAdapter.NNToGenome(p2.getNeuralNetwork());
+                
                 double[] combined = CombineGenomes(g1, g2);
-                child.getNeuralNetwork().SetGenome(combined);
-                TestMember(child, TESTGAMES);
+                NNPlayer child = new NNPlayer(2, NNGenomeAdapter.GenomeToNN(combined));
+                
+                TestMember(child);
                 members.add(child);
                 i++;
             }
             for(i=0; i<5; i++){
-                TestMember(highest.get(i), TESTGAMES);
+                TestMember(highest.get(i));
                 members.add(highest.get(i));
             }
             
@@ -118,6 +119,9 @@ public class PopulationManager {
     }
     
     private double[] CombineGenomes(double[] g1, double[] g2){
+        double[] properties = Arrays.copyOfRange(g1, g1.length-3, g1.length);
+        
+        
         double[] output = new double[g1.length];
         for(int i=0; i<g1.length; i++){
             output[i] = g1[i];
@@ -129,6 +133,10 @@ public class PopulationManager {
         output[rnd.nextInt(output.length)] = (rnd.nextInt(3)-1);
         output[rnd.nextInt(output.length)] = (rnd.nextInt(3)-1);
         output[rnd.nextInt(output.length)] = (rnd.nextInt(3)-1);
+        
+        output[output.length-3] = properties[0];
+        output[output.length-2] = properties[1];
+        output[output.length-1] = properties[2];
         
         return output;
     }
@@ -144,16 +152,15 @@ public class PopulationManager {
     
     private void SaveBest(){
         
-        double[] genome = members.element().getNeuralNetwork().GetGenome();
+        double[] genome = NNGenomeAdapter.NNToGenome(members.element().getNeuralNetwork());
         GenomeLoader.SaveGenome(genome);
     }
     
     private void LoadBest(){
         double[] genome = GenomeLoader.LoadGenome();
         if(genome.length>0){
-            NNPlayer bestplayer = new NNPlayer(2, WIDTH, HEIGHT);
-            bestplayer.getNeuralNetwork().SetGenome(genome);
-            TestMember(bestplayer, TESTGAMES);
+            NNPlayer bestplayer = new NNPlayer(2, NNGenomeAdapter.GenomeToNN(genome));
+            TestMember(bestplayer);
             members.add(bestplayer);
         }
     }

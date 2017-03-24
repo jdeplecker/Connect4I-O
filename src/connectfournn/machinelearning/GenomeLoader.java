@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package machinelearning;
+package connectfournn.machinelearning;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,16 +13,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import players.NNPlayer;
+import connectfournn.players.NNPlayer;
 
 /**
  *
  * @author Joeri
  */
 public class GenomeLoader {
-
-    public GenomeLoader() {
-    }
     
     public static void SaveGenome(double[] genome){
         FileOutputStream fos = null;

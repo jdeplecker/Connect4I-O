@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package machinelearning;
+package connectfournn.machinelearning;
 
 import java.util.Random;
 
@@ -103,43 +103,15 @@ public class NeuralNetwork {
         this.hiddenToOutput = hiddenToOutput;
     }
     
-    
-    
-
-    public double[] GetGenome() {
-        double[] output = new double[inputToHidden.length * inputToHidden[0].length + hiddenToOutput.length * hiddenToOutput[0].length];
-
-        for (int i = 0; i < inputToHidden.length; i++) {
-            for (int j = 0; j < inputToHidden[0].length; j++) {
-                output[inputToHidden[0].length * i + j] = inputToHidden[i][j];
-            }
-        }
-        int startSecond = inputToHidden.length * inputToHidden[0].length;
-
-        for (int i = 0; i < hiddenToOutput.length; i++) {
-            for (int j = 0; j < hiddenToOutput[0].length; j++) {
-                output[hiddenToOutput[0].length * i + j + startSecond] = hiddenToOutput[i][j];
-            }
-        }
-        return output;
+    public int getInputLength(){
+        return inputLayer.length;
     }
-
-    public void SetGenome(double[] genome) {
-        int index = 0;
-
-        for (int i = 0; i < inputToHidden.length; i++) {
-            for (int j = 0; j < inputToHidden[0].length; j++) {
-                inputToHidden[i][j] = genome[index];
-                index++;
-            }
-        }
-        int startSecond = inputToHidden.length * inputToHidden[0].length + 1;
-
-        for (int i = 0; i < hiddenToOutput.length; i++) {
-            for (int j = 0; j < hiddenToOutput[0].length; j++) {
-                hiddenToOutput[i][j] = genome[index];
-                index++;
-            }
-        }
+    
+    public int getHiddenLength(){
+        return hiddenLayer.length;
+    }
+    
+    public int getOutputLength(){
+        return outputLayer.length;
     }
 }

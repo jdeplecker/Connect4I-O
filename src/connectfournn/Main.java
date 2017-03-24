@@ -5,28 +5,27 @@
  */
 package connectfournn;
 
-import machinelearning.PopulationManager;
-import game.GameInstance;
-import players.EasyAIPlayer;
-import players.EasyHighestAIPlayer;
+import connectfournn.machinelearning.PopulationManager;
+import connectfournn.game.GameInstance;
+import connectfournn.players.EasyAIPlayer;
+import connectfournn.players.EasyHighestAIPlayer;
 
 /**
  *
  * @author Joeri
  */
-public class ConnectFourNN {
+public class Main {
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // play game
-        PopulationManager pm = new PopulationManager(200, true);
+        PopulationManager pm = new PopulationManager(false);
         System.out.println("Highest %: " + pm.GetHighestPlayer().getFitness()*100);
-        pm.Improve(250);
+        pm.Improve(50);
         System.out.println("Highest %: " + pm.GetHighestPlayer().getFitness()*100);
         
-        pm.GetHighestPlayer().playerNr = 2;
-        GameInstance gi = new GameInstance(new EasyHighestAIPlayer(1), pm.GetHighestPlayer(), 7, 6);
+        GameInstance gi = new GameInstance(new EasyHighestAIPlayer(1), pm.GetHighestPlayer());
         while(gi.GetWonState()==0){
             gi.PlayTurn();
             gi.PrintBoard();
@@ -34,7 +33,7 @@ public class ConnectFourNN {
         gi.PrintWonState();
         
         
-        gi = new GameInstance(new EasyAIPlayer(1), pm.GetHighestPlayer(), 7, 6);
+        gi = new GameInstance(new EasyAIPlayer(1), pm.GetHighestPlayer());
         while(gi.GetWonState()==0){
             gi.PlayTurn();
             gi.PrintBoard();
