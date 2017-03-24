@@ -20,9 +20,9 @@ public class Main {
      */
     public static void main(String[] args) {
         // play game
-        PopulationManager pm = new PopulationManager(false);
+        PopulationManager pm = new PopulationManager(true, false);
         System.out.println("Highest %: " + pm.GetHighestPlayer().getFitness()*100);
-        pm.Improve(50);
+        pm.Improve(Settings.GENERATION_COUNT);
         System.out.println("Highest %: " + pm.GetHighestPlayer().getFitness()*100);
         
         GameInstance gi = new GameInstance(new EasyHighestAIPlayer(1), pm.GetHighestPlayer());

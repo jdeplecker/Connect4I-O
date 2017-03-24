@@ -8,6 +8,8 @@ package connectfournn.players;
 import connectfournn.Settings;
 import connectfournn.game.Board;
 import connectfournn.machinelearning.NeuralNetwork;
+import java.util.PriorityQueue;
+import javafx.util.Pair;
 
 /**
  *
@@ -35,9 +37,21 @@ public class NNPlayer extends APlayer {
     }
     
     @Override
-    public boolean MakeMove(Board b) {
-        int output = nn.GetOutput(b.ConvertToNNInput());
-        return b.putPiece(output, playerNr);        
+    public boolean MakeMove(Board board) {
+        
+        PriorityQueue<Pair<Double,Integer>> q = new PriorityQueue<>((a,b) -> (int)(b.getKey()*1000 - a.getKey()*1000));
+        double[] output = nn.GetOutput(board.ConvertToNNInput());
+        
+        for (int i = 0; i < output.length; i++) {
+            q.add(new Pair(output[i],i));
+        }
+        boolean movemade = false;
+        
+        while(!q.isEmpty() && !movemade){
+            movemade = board.putPiece(q.poll().getValue(), playerNr);
+        }
+        
+        return movemade;        
     }
 
     public double getFitness() {

@@ -16,9 +16,10 @@ public class Settings {
     public static final int BOARD_WIDTH = 7;
     
     // Population
-    public static final int GENERATION_COUNT = 50;
-    public static final int POPULATION_SIZE = 200;
-    public static final int GAME_COUNT = 250;
+    public static final int GENERATION_COUNT = 100;
+    public static final int POPULATION_SIZE = 500;
+    public static final int BEST_KEPT = 50;
+    public static final int GAME_COUNT = 500;
     
     // Neuralnetwork
     public static final int HIDDENLAYER_COUNT = 15;

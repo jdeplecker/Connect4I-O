@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class NeuralNetwork {
 
-    private static Random rnd = new Random();
+    private static final Random rnd = new Random();
 
     private double[] inputLayer;
     private double[] hiddenLayer;
@@ -37,20 +37,13 @@ public class NeuralNetwork {
         hiddenToOutput[rnd.nextInt(hiddenToOutput.length)][rnd.nextInt(hiddenToOutput[0].length)] = rnd.nextInt(3)-1;
     }
 
-    public int GetOutput(double[] input) {
+    public double[] GetOutput(double[] input) {
         this.inputLayer = input;
 
         CalcHidden();
         CalcOutput();
 
-        int biggest = 0;
-        for (int i = 1; i < outputLayer.length; i++) {
-            if (outputLayer[i] > outputLayer[biggest]) {
-                biggest = i;
-            }
-        }
-
-        return biggest;
+        return outputLayer;
     }
 
     private void CalcHidden() {

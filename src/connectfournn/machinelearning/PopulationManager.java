@@ -21,14 +21,16 @@ import java.util.Random;
  */
 public class PopulationManager {
 
-    private static Random rnd = new Random();
+    private static final Random rnd = new Random();
     
     private NNPlayer best = new NNPlayer(1);
+    private boolean trainp1 = false;
     
     PriorityQueue<NNPlayer> members = new PriorityQueue<>((a,b) -> (int)(b.getFitness()*1000 - a.getFitness()*1000));
     
-    public PopulationManager(boolean loadbest) {
+    public PopulationManager(boolean loadbest, boolean trainp1) {
         
+        this.trainp1 = trainp1;        
         int size = Settings.GENERATION_COUNT;
         
         if(loadbest){
@@ -47,7 +49,7 @@ public class PopulationManager {
     }
     
     
-    private void TestMember(NNPlayer p2){
+    private void TestMember(NNPlayer player){
         
         int gamesamount = Settings.GAME_COUNT;
                 
@@ -56,16 +58,28 @@ public class PopulationManager {
         APlayer easyhighest = new EasyHighestAIPlayer(1);
         
         for (int i = 0; i < gamesamount; i++) {
-            GameInstance gi;
+           
+            APlayer opponent;
+            
             if(i<gamesamount/3){
-                gi = new GameInstance(easy, p2);                
+                opponent = easy;             
             }
             else if(i<gamesamount/3*2){
-                gi = new GameInstance(best, p2);    
+                opponent = best;
             }
             else{
-                gi = new GameInstance(easyhighest, p2);           
+                opponent = easyhighest;    
             }
+            
+            GameInstance gi;
+            if(trainp1){
+                gi = new GameInstance(player, opponent);
+            }
+            else{
+                gi = new GameInstance(opponent, player);
+            }
+            
+            
             while (gi.GetWonState() == 0) {
                 gi.PlayTurn();
                 stats.AddTurn();
@@ -73,7 +87,7 @@ public class PopulationManager {
             stats.AddStat(gi.GetWonState());
         }
         
-        p2.setFitness(stats.GetP2WinPercentage());
+        player.setFitness(stats.GetP2WinPercentage() + stats.GetTurns()/5);
     }
     
     public NNPlayer GetHighestPlayer(){
@@ -82,17 +96,17 @@ public class PopulationManager {
     
     public void Improve(int itterations){
         System.out.println("before improvement:" + CalcAverage());
+        best = members.peek();
         for(int itt=0; itt< itterations; itt++){
             ArrayList<NNPlayer> highest = new ArrayList<>();
             int memberscount = members.size();
-            best = members.peek();
             
-            for(int i=0; i<10; i++){
+            for(int i=0; i<Settings.BEST_KEPT; i++){
                 highest.add(members.poll());
             }
             members.clear();
             int i=0;
-            while(i<memberscount-5){
+            while(i<(memberscount-Settings.BEST_KEPT)/2){ //cross produce
                 
                 NNPlayer p1 = highest.get(rnd.nextInt(highest.size()));
                 double[] g1 = NNGenomeAdapter.NNToGenome(p1.getNeuralNetwork());
@@ -107,14 +121,26 @@ public class PopulationManager {
                 members.add(child);
                 i++;
             }
-            for(i=0; i<5; i++){
+            while(i<memberscount-Settings.BEST_KEPT){ //mutate
+                
+                NNPlayer p = highest.get(rnd.nextInt(highest.size()));
+                double[] g = NNGenomeAdapter.NNToGenome(p.getNeuralNetwork());
+                
+                NNPlayer child = new NNPlayer(2, NNGenomeAdapter.GenomeToNN(MutateGenome(g)));
+                
+                TestMember(child);
+                members.add(child);
+                i++;
+            }
+            for(i=0; i<Settings.BEST_KEPT; i++){
                 TestMember(highest.get(i));
                 members.add(highest.get(i));
             }
             
-            System.out.print("after itt " + itt + ": " + new DecimalFormat("#00.00%").format(CalcAverage()));
+            System.out.print("gen " + itt + ": " + new DecimalFormat("#00.00%").format(CalcAverage()));
             System.out.println(" highest: " + new DecimalFormat("#00.00%").format(members.peek().getFitness()));
         }
+        best = members.peek();
         SaveBest();
     }
     
@@ -129,6 +155,17 @@ public class PopulationManager {
                 output[i] = g2[i];
             }
         }
+        output[output.length-3] = properties[0];
+        output[output.length-2] = properties[1];
+        output[output.length-1] = properties[2];
+        
+        return output;
+    }
+    
+    private double[] MutateGenome(double[] g){
+        double[] output = g;
+        double[] properties = Arrays.copyOfRange(g, g.length-3, g.length);
+        
         output[rnd.nextInt(output.length)] = (rnd.nextInt(3)-1);
         output[rnd.nextInt(output.length)] = (rnd.nextInt(3)-1);
         output[rnd.nextInt(output.length)] = (rnd.nextInt(3)-1);
@@ -136,7 +173,7 @@ public class PopulationManager {
         
         output[output.length-3] = properties[0];
         output[output.length-2] = properties[1];
-        output[output.length-1] = properties[2];
+        output[output.length-1] = properties[2];  
         
         return output;
     }

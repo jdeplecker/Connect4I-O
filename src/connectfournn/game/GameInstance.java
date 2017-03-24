@@ -41,13 +41,17 @@ public class GameInstance {
             } else {
                 movemade = player2.MakeMove(board);
             }
-            p1Turn = !p1Turn;
+            
             if(movemade){
                 wonState = BoardStateChecker.instance.CheckWon(board);
             }
-            else{
-                wonState = -1;
+            else if(p1Turn){
+                wonState = 2; //no move made by p1
             }
+            else{
+                wonState = 1; //no move made by p2
+            }
+            p1Turn = !p1Turn;
         }
     }
     
