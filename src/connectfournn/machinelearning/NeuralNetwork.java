@@ -74,7 +74,8 @@ public class NeuralNetwork {
     private double[] UseActivationFunction(double[] input) {
 
         for (int i = 0; i < input.length; i++) {
-            input[i] = 2 / (1 + Math.exp(-4.9*input[i]))-1;
+            //input[i] = 2 / (1 + Math.exp(-4.9*input[i]))-1; //sigmoid
+            input[i] = -2 * input[i] * Math.exp(-input[i]*input[i]);
         }
 
         return input;

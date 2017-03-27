@@ -23,7 +23,7 @@ public class HumanPlayer extends APlayer{
      public boolean MakeMove(Board b){
         System.out.println("Enter columnnr to insert (0 - " + (b.GetWidth()-1) + "):");
         int col = in.nextInt();
-        if(col > 0 && col < b.GetWidth()){
+        if(col >= 0 && col < b.GetWidth()){
             return b.putPiece(col, playerNr);
         }
         

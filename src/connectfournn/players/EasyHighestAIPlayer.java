@@ -8,7 +8,6 @@ package connectfournn.players;
 import connectfournn.game.Board;
 import java.util.ArrayList;
 import java.util.Random;
-import javafx.collections.transformation.SortedList;
 
 /**
  *
@@ -26,7 +25,7 @@ public class EasyHighestAIPlayer extends APlayer{
      public boolean MakeMove(Board b) {
         
         int highest = 0;
-        int highestindex = 0;
+        ArrayList<Integer> highestlist = new ArrayList<>();
         
         for(int i=0; i<b.GetWidth(); i++){
             int row = 0;
@@ -34,11 +33,14 @@ public class EasyHighestAIPlayer extends APlayer{
                 row++;
             }
             if(row>=highest && row<b.GetHeight()){
+                if(row!=highest){
+                    highestlist.clear();
+                }
                 highest = row;
-                highestindex = i;
+                highestlist.add(i);
             }
         }
-        return b.putPiece(highestindex, playerNr);
+        return b.putPiece(highestlist.get(rnd.nextInt(highestlist.size())), playerNr);
         
     }
     

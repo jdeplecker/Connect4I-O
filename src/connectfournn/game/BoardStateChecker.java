@@ -56,7 +56,7 @@ public class BoardStateChecker {
                     boolean isfour = true;
                     for (int i = 1; i < 4 && isfour; i++) {
                         if (b.GetPiece(col + i, row) != playernr) {
-                            col += i;
+                            col += i-1;
                             isfour = false;
                         }
                     }

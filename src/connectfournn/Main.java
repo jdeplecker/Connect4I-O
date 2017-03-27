@@ -7,8 +7,10 @@ package connectfournn;
 
 import connectfournn.machinelearning.PopulationManager;
 import connectfournn.game.GameInstance;
+import connectfournn.players.APlayer;
 import connectfournn.players.EasyAIPlayer;
 import connectfournn.players.EasyHighestAIPlayer;
+import connectfournn.players.HumanPlayer;
 
 /**
  *
@@ -22,18 +24,17 @@ public class Main {
         // play game
         PopulationManager pm = new PopulationManager(true, false);
         System.out.println("Highest %: " + pm.GetHighestPlayer().getFitness()*100);
+//        PlayGame(new HumanPlayer(1), pm.GetHighestPlayer());
         pm.Improve(Settings.GENERATION_COUNT);
         System.out.println("Highest %: " + pm.GetHighestPlayer().getFitness()*100);
         
-        GameInstance gi = new GameInstance(new EasyHighestAIPlayer(1), pm.GetHighestPlayer());
-        while(gi.GetWonState()==0){
-            gi.PlayTurn();
-            gi.PrintBoard();
-        }
-        gi.PrintWonState();
+        PlayGame(new EasyHighestAIPlayer(1), pm.GetHighestPlayer());
+        PlayGame(new EasyAIPlayer(1), pm.GetHighestPlayer());
+    }
+    
+    public static void PlayGame(APlayer p1, APlayer p2){
         
-        
-        gi = new GameInstance(new EasyAIPlayer(1), pm.GetHighestPlayer());
+        GameInstance gi = new GameInstance(p1, p2);
         while(gi.GetWonState()==0){
             gi.PlayTurn();
             gi.PrintBoard();
